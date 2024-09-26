@@ -1,7 +1,7 @@
 import { Answers } from "@/modules/answers/entities/answers.entities";
 import { Quizzes } from "@/modules/quizzes/entities/quizzes.entity";
 import { Results } from "@/modules/results/entities/results.entity/results.entity";
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 export enum UserRole {
     STUDENT = 'student',
     TEACHER = 'teacher',
@@ -30,8 +30,8 @@ export class Users {
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     created_at: Date;
 
-  
-    @OneToMany(() => Quizzes, (quiz) => quiz.created_by)
+
+    @OneToMany(() => Quizzes, (quiz) => quiz.user)
     quizzes: Quizzes[];
   
     @OneToMany(() => Answers, (answer) => answer.student)

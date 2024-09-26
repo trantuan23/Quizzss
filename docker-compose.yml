@@ -15,7 +15,7 @@ services:
       - PG_HOST=db 
       - PG_USER=postgres
       - PG_PASSWORD=postgres
-      - PG_DB=postgres
+      - PG_DB=quizzs
       - PG_PORT=5432
     depends_on:
       - db
@@ -27,7 +27,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+      - POSTGRES_DB=PG_DB
     volumes:
       - pgdata:/var/lib/postgresql/data
 volumes:

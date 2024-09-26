@@ -11,6 +11,8 @@ import { Options } from './modules/options/entities/entities.option';
 import { Questions } from './modules/questions/entities/question.entities';
 import { Quizzes } from './modules/quizzes/entities/quizzes.entity';
 import { Results } from './modules/results/entities/results.entity/results.entity';
+import { UsersModule } from './modules/users/users.module';
+import { QuizzesModule } from './modules/quizzes/quizzes.module';
 
 
 
@@ -27,6 +29,8 @@ import { Results } from './modules/results/entities/results.entity/results.entit
       entities: [Users,Answers,AudioGuesses,DragDropAnswers,Options,Questions,Quizzes,Results],
       synchronize: true,
     }),
+    UsersModule,
+    QuizzesModule
   ],
   controllers: [AppController],
   providers: [AppService],
