@@ -18,10 +18,10 @@ export class Results {
     created_at: Date;
 
     @ManyToOne(() => Users, (user) => user.results, { onDelete: 'CASCADE' })
-    student: Users;
+    user: Users;
 
-    @ManyToOne(() => Quizzes, (quiz) => quiz.results, { onDelete: 'CASCADE' })
-    quiz: Quizzes;
+    @ManyToOne(() => Quizzes, (quizz) => quizz.results, { onDelete: 'CASCADE' })
+    quizz: Quizzes;
 
 
 

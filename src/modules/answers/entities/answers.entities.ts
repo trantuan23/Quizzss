@@ -11,14 +11,14 @@ export class Answers {
     @Column({ type: 'text', nullable: true })
     answer_text: string;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     submitted_at: Date;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     created_at: Date;
 
     @ManyToOne(() => Users, (user) => user.answers, { onDelete: 'CASCADE' })
-    student: Users;
+    user: Users;
   
     @ManyToOne(() => Questions, (question) => question.answers, { onDelete: 'CASCADE' })
     question: Questions;

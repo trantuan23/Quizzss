@@ -19,13 +19,12 @@ export class Quizzes {
   created_at: Date;
 
 
-  // Người tham gia quiz
   @ManyToOne(() => Users, (user) => user.quizzes, { nullable: false })
   user: Users; 
 
-  @OneToMany(() => Questions, (question) => question.quiz)
+  @OneToMany(() => Questions, (question) => question.quizz)
   questions: Questions[];
 
-  @OneToMany(() => Results, (result) => result.quiz)
+  @OneToMany(() => Results, (result) => result.quizz)
   results: Results[];
 }

@@ -13,6 +13,10 @@ import { Quizzes } from './modules/quizzes/entities/quizzes.entity';
 import { Results } from './modules/results/entities/results.entity/results.entity';
 import { UsersModule } from './modules/users/users.module';
 import { QuizzesModule } from './modules/quizzes/quizzes.module';
+import { AnswersModule } from './modules/answers/answers.module';
+import { QuestionsModule } from './modules/questions/questions.module';
+import { ResultsModule } from './modules/results/results.module';
+import { OptionsModule } from './modules/options/options.module';
 
 
 
@@ -26,13 +30,17 @@ import { QuizzesModule } from './modules/quizzes/quizzes.module';
       username: process.env.PG_USER,
       password: process.env.PG_PASSWORD,
       database: process.env.PG_DB,
-      entities: [Users,Answers,AudioGuesses,DragDropAnswers,Options,Questions,Quizzes,Results],
+      entities: [Users, Answers, AudioGuesses, DragDropAnswers, Options, Questions, Quizzes, Results],
       synchronize: true,
     }),
     UsersModule,
-    QuizzesModule
+    QuizzesModule,
+    AnswersModule,
+    QuestionsModule,
+    ResultsModule,
+    OptionsModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

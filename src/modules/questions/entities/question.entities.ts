@@ -4,7 +4,7 @@ import { AudioGuesses } from '@/modules/audioguesses/entities/audioguesses.entit
 import { DragDropAnswers } from '@/modules/dragdropanswers/entities/dragdropanswer.entity/dragdropanswer.entity';
 import { Options } from '@/modules/options/entities/entities.option';
 import { Quizzes } from '@/modules/quizzes/entities/quizzes.entity';
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 
 export enum QuestionType {
   MULTIPLE_CHOICE = 'multiple_choice',
@@ -17,8 +17,8 @@ export class Questions {
   @PrimaryGeneratedColumn('uuid')
   question_id: string;
 
-  @ManyToOne(() => Quizzes, (quiz) => quiz.questions, { onDelete: 'CASCADE' })
-  quiz: Quizzes;
+  @ManyToOne(() => Quizzes, (quizz) => quizz.questions, { onDelete: 'CASCADE' })
+  quizz: Quizzes;
 
 
   @Column({ type: 'text' })
