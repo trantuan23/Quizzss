@@ -10,8 +10,8 @@ export class DragDropAnswers {
   correct_order: any;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    created_at: Date;
+  created_at: Date;
 
-    @ManyToOne(() => Questions, (question) => question.drag_drop_answers, { onDelete: 'CASCADE' })
-    question: Questions;
+  @ManyToOne(() => Questions, (question) => question.drag_drop_answers, { onDelete: 'CASCADE' })
+  question: Questions;
 }

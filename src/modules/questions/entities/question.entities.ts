@@ -1,6 +1,6 @@
 // src/questions/questions.entity.ts
 import { Answers } from '@/modules/answers/entities/answers.entities';
-import { AudioGuesses } from '@/modules/audioguesses/entities/audioguesses.entity/audioguesses.entity';
+import { AudioGuesses } from '@/modules/audioguesses/entities/audioguesses.entity';
 import { DragDropAnswers } from '@/modules/dragdropanswers/entities/dragdropanswer.entity/dragdropanswer.entity';
 import { Options } from '@/modules/options/entities/entities.option';
 import { Quizzes } from '@/modules/quizzes/entities/quizzes.entity';
