@@ -27,8 +27,11 @@ export class ClassesController {
     }
 
     @Put(':id')
-    update(@Param('id') @Body() id: string, updateClassDto: UpdateClassDto): Promise<Classes> {
-        return this.classService.update(id, updateClassDto)
+    update(
+        @Param('id') class_id: string,
+        @Body() updateClassDto: UpdateClassDto
+    ): Promise<Classes> {
+        return this.classService.update(class_id, updateClassDto);
     }
 
     @Delete(':id')

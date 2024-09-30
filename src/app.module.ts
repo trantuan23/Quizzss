@@ -20,6 +20,7 @@ import { DragDropAnswersModule } from './modules/dragdropanswers/dragdropanswers
 import { ClassesModule } from './modules/classes/classes.module';
 import { SubjectsModule } from './modules/subjects/subjects.module';
 import { Classes } from './modules/classes/entities/class.entity';
+import { Subjects } from './modules/subjects/entities/subject.entity';
 
 
 
@@ -33,7 +34,7 @@ import { Classes } from './modules/classes/entities/class.entity';
       username: process.env.PG_USER,
       password: process.env.PG_PASSWORD,
       database: process.env.PG_DB,
-      entities: [Users, Answers, AudioGuesses, DragDropAnswers, Options, Questions, Quizzes, Results,Classes],
+      entities: [Users, Answers, AudioGuesses, DragDropAnswers, Options, Questions, Quizzes, Results,Classes,Subjects],
       synchronize: true,
     }),
     UsersModule,
@@ -46,7 +47,8 @@ import { Classes } from './modules/classes/entities/class.entity';
     DragDropAnswersModule,
     ClassesModule,
     SubjectsModule,
-    ClassesModule
+    ClassesModule,
+    SubjectsModule
   ],
 })
 export class AppModule { }

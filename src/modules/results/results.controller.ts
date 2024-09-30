@@ -2,7 +2,6 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
 import { ResultsService } from './results.service';
 import { CreateResultDto } from './dto/create-result.dto';
 import { Results } from './entities/results.entity/results.entity';
-import { UpdateResult } from 'typeorm';
 import { UpdateResultDto } from './dto/update-result.dto';
 
 @Controller('results')

@@ -12,4 +12,8 @@ export class CreateResultDto {
   @IsNotEmpty()
   @IsUUID()
   quizId: string; 
+
+  @IsNotEmpty()
+  @IsUUID()
+  subjectId:string
 }

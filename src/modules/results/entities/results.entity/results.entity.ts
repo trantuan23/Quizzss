@@ -1,5 +1,6 @@
 // src/results/results.entity.ts
 import { Quizzes } from '@/modules/quizzes/entities/quizzes.entity';
+import { Subjects } from '@/modules/subjects/entities/subject.entity';
 import { Users } from '@/modules/users/entities/user.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
 
@@ -22,6 +23,9 @@ export class Results {
 
     @ManyToOne(() => Quizzes, (quizz) => quizz.results, { onDelete: 'CASCADE' })
     quizz: Quizzes;
+
+    @ManyToOne(() => Subjects)
+    subject: Subjects;
 
 
 
