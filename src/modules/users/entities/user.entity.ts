@@ -1,7 +1,8 @@
 import { Answers } from "@/modules/answers/entities/answers.entities";
+import { Classes } from "@/modules/classes/entities/class.entity";
 import { Quizzes } from "@/modules/quizzes/entities/quizzes.entity";
 import { Results } from "@/modules/results/entities/results.entity/results.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 export enum UserRole {
     STUDENT = 'student',
     TEACHER = 'teacher',
@@ -39,6 +40,9 @@ export class Users {
   
     @OneToMany(() => Results, (result) => result.user)
     results: Results[];
+
+    @ManyToOne(() => Classes, (cls) => cls.user, { nullable: true })
+    class: Classes;
 
 
 }

@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from './modules/users/entities/user.entity';
@@ -19,10 +17,9 @@ import { ResultsModule } from './modules/results/results.module';
 import { OptionsModule } from './modules/options/options.module';
 import { AudioGuessesModule } from './modules/audioguesses/audioguesses.module';
 import { DragDropAnswersModule } from './modules/dragdropanswers/dragdropanswers.module';
-import { ClassesService } from './modules/classes/classes.service';
-import { ClassesController } from './modules/classes/classes.controller';
 import { ClassesModule } from './modules/classes/classes.module';
 import { SubjectsModule } from './modules/subjects/subjects.module';
+import { Classes } from './modules/classes/entities/class.entity';
 
 
 
@@ -36,7 +33,7 @@ import { SubjectsModule } from './modules/subjects/subjects.module';
       username: process.env.PG_USER,
       password: process.env.PG_PASSWORD,
       database: process.env.PG_DB,
-      entities: [Users, Answers, AudioGuesses, DragDropAnswers, Options, Questions, Quizzes, Results],
+      entities: [Users, Answers, AudioGuesses, DragDropAnswers, Options, Questions, Quizzes, Results,Classes],
       synchronize: true,
     }),
     UsersModule,
@@ -49,8 +46,7 @@ import { SubjectsModule } from './modules/subjects/subjects.module';
     DragDropAnswersModule,
     ClassesModule,
     SubjectsModule,
+    ClassesModule
   ],
-  controllers: [AppController, ClassesController],
-  providers: [AppService, ClassesService],
 })
 export class AppModule { }

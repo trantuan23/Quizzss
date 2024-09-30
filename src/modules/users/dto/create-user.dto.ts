@@ -22,4 +22,7 @@ export class CreateUserDto {
 
     @IsEnum(UserRole, { message: 'Role must be student, teacher, or admin' })
     role: UserRole;
+
+    @IsNotEmpty()
+    classId:string
 }
