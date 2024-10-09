@@ -6,7 +6,7 @@ services:
     image: data_quizz/nestapp:1.0.0
     build: .
     ports:
-      - 3000:3000
+      - 8000:8000
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules

@@ -1,7 +1,6 @@
-import { Controller, Post, Body, Get, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Put, Delete, Query } from '@nestjs/common';
 import { ClassesService } from './classes.service';
 import { CreateClassDto } from './dto/create-class.dto';
-import { Classes } from './entities/class.entity';
 import { UpdateClassDto } from './dto/update-class.dto';
 
 @Controller('classes')
@@ -11,34 +10,33 @@ export class ClassesController {
     ) { }
 
     @Post()
-    create(@Body() createClassDto: CreateClassDto): Promise<Classes> {
-        return this.classService.create(createClassDto)
-
+    async create(@Body() createClassDto: CreateClassDto): Promise<{ message: string, data: any }> {
+        return await this.classService.create(createClassDto);
     }
 
     @Get()
-    findAll(): Promise<Classes[]> {
-        return this.classService.findAll()
+    async findAll(
+        @Query('page') page: number = 1,  // Giá trị mặc định là 1
+        @Query('limit') limit: number = 10 // Giá trị mặc định là 10
+    ): Promise<{ message: string, data: any }> {
+        return await this.classService.findAll(page, limit);
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string): Promise<Classes> {
-        return this.classService.findOne(id)
+    async findOne(@Param('id') id: string): Promise<{ message: string, data: any }> {
+        return await this.classService.findOne(id);
     }
 
     @Put(':id')
-    update(
+    async update(
         @Param('id') class_id: string,
         @Body() updateClassDto: UpdateClassDto
-    ): Promise<Classes> {
-        return this.classService.update(class_id, updateClassDto);
+    ): Promise<{ message: string, data: any }> {
+        return await this.classService.update(class_id, updateClassDto);
     }
 
     @Delete(':id')
-    delete(@Param('id') id: string): Promise<void> {
-        return this.classService.remove(id)
+    async delete(@Param('id') id: string): Promise<{ message: string }> {
+        return await this.classService.remove(id);
     }
-
-
-
 }
