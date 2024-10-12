@@ -13,7 +13,9 @@ export class Quizzes {
 
   @Column({ type: 'text', nullable: true })
   description: string;
-
+  
+  @Column()
+  time : number
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;

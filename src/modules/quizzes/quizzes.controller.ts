@@ -1,4 +1,3 @@
-// src/modules/quizzes/quizzes.controller.ts
 import { Controller, Post, Get, Put, Delete, Param, Body } from '@nestjs/common';
 import { QuizzesService } from './quizzes.service';
 import { Quizzes } from './entities/quizzes.entity';

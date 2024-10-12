@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString, MinLength } from "class-validator";
+import { IsEmail, IsEnum, IsNotEmpty, IsString, MinLength, ValidateIf } from "class-validator";
 
 // Role Enum
 export enum UserRole {
@@ -23,6 +23,8 @@ export class CreateUserDto {
     @IsEnum(UserRole, { message: 'Role must be student, teacher, or admin' })
     role: UserRole;
 
-    @IsNotEmpty()
-    classId:string
+    // Chỉ yêu cầu classId nếu role là STUDENT
+    @ValidateIf((o) => o.role === UserRole.STUDENT)
+    @IsNotEmpty({ message: 'Học sinh phải được chỉ định vào một lớp' })
+    classId: string;
 }

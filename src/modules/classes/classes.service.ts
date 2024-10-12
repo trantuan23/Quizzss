@@ -40,26 +40,30 @@ export class ClassesService {
         if (limit <= 0) {
             throw new BadRequestException('Giới hạn phải lớn hơn 0');
         }
-    
+
         const skip = (page - 1) * limit;
         const [classes, total] = await this.classRepository.findAndCount({
             skip: skip,
             take: limit,
         });
-    
+
         if (classes.length === 0) {
             throw new NotFoundException('Không có dữ liệu');
         }
-    
+
         return {
             message: 'Lấy danh sách lớp học thành công!',
             data: classes,
-            total: total, 
-            currentPage: page, 
+            total: total,
+            currentPage: page,
         };
     }
-    
-    
+
+    async getClass():Promise<Classes[]>{
+        return this.classRepository.find()
+    }
+
+
 
     async findOne(id: string): Promise<{ message: string, data: Classes }> {
         const classData = await this.classRepository.findOne({ where: { class_id: id } });

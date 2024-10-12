@@ -2,6 +2,7 @@ import { Controller, Post, Body, Get, Param, Put, Delete, Query } from '@nestjs/
 import { ClassesService } from './classes.service';
 import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
+import { Classes } from './entities/class.entity';
 
 @Controller('classes')
 export class ClassesController {
@@ -21,6 +22,12 @@ export class ClassesController {
     ): Promise<{ message: string, data: any }> {
         return await this.classService.findAll(page, limit);
     }
+
+    @Get('all')
+    async getAll():Promise<Classes[]>{
+        return await this.classService.getClass()
+    }
+
 
     @Get(':id')
     async findOne(@Param('id') id: string): Promise<{ message: string, data: any }> {

@@ -10,6 +10,11 @@ export class CreateQuizzDto {
   description?: string;
 
   @IsNotEmpty()
+  time: number;
+
+  @IsNotEmpty()
   userId: string;
+
+
 
 }

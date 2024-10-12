@@ -9,6 +9,7 @@ export class Classes {
   @Column({ length: 100 })
   class_name: string;
 
+  
 
   @OneToMany(() => Users, (user) => user.class)
   user: Users[];
