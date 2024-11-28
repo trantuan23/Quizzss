@@ -1,37 +1,58 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { QuestionsService } from './questions.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
-import { Questions } from './entities/question.entities';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 
 @Controller('questions')
 export class QuestionsController {
-    constructor(
-        private readonly questionService:QuestionsService
-    ){}
+    constructor(private readonly questionsService: QuestionsService) {}
 
     @Post()
-    create(@Body() createQuestionDto:CreateQuestionDto):Promise<Questions>{
-        return this.questionService.create(createQuestionDto)
+    async create(@Body() createQuestionDto: CreateQuestionDto) {
+        const result = await this.questionsService.create(createQuestionDto);
+        return {
+            status: 201,
+            message: result.message,
+            data: result.data
+        };
     }
 
     @Get()
-    findAll():Promise<Questions[]>{
-        return this.questionService.findAll()
+    async findAll() {
+        const result = await this.questionsService.findAll();
+        return {
+            status: 200,
+            message: result.message,
+            data: result.data
+        };
     }
 
     @Get(':id')
-    findOne(@Param('id') id:string):Promise<Questions>{
-        return this.questionService.findOne(id)
+    async findOne(@Param('id') id: string) {
+        const result = await this.questionsService.findOne(id);
+        return {
+            status: 200,
+            message: result.message,
+            data: result.data
+        };
     }
 
     @Put(':id')
-    update(@Param('id') id:string,@Body() updateQuestionDto:UpdateQuestionDto):Promise<Questions>{
-        return this.questionService.update(id,updateQuestionDto)
+    async update(@Param('id') id: string, @Body() updateQuestionDto: UpdateQuestionDto) {
+        const result = await this.questionsService.update(id, updateQuestionDto);
+        return {
+            status: 200,
+            message: result.message,
+            data: result.data
+        };
     }
 
     @Delete(':id')
-    remove(@Param('id') id:string):Promise<void>{
-        return this.questionService.remove(id)
+    async remove(@Param('id') id: string) {
+        const result = await this.questionsService.remove(id);
+        return {
+            status: 200,
+            message: result.message
+        };
     }
 }

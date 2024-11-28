@@ -6,34 +6,54 @@ import { UpdateAnswerDto } from './dto/update-answer.dto';
 
 @Controller('answers')
 export class AnswersController {
-    constructor(private readonly answersSevice: AnswersService) { }
+    constructor(private readonly answersService: AnswersService) {}
 
     @Post()
-    create(@Body() createAnswerDto: CreateAnswerDto): Promise<Answers> {
-        return this.answersSevice.create(createAnswerDto)
+    async create(@Body() createAnswerDto: CreateAnswerDto) {
+        const result = await this.answersService.create(createAnswerDto);
+        return {
+            status: 201,
+            message: result.message,
+            data: result.data,
+        };
     }
 
     @Get()
-    findAll(): Promise<Answers[]> {
-        return this.answersSevice.findAll()
-    }
-
-    @Put(':id')
-    update(@Param('id') id: string, @Body() updateAnswerDto: UpdateAnswerDto): Promise<Answers> {
-        return this.answersSevice.update(id, updateAnswerDto)
+    async findAll() {
+        const result = await this.answersService.findAll();
+        return {
+            status: 200,
+            message: result.message,
+            data: result.data,
+        };
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string): Promise<Answers> {
-        return this.answersSevice.findOne(id);
+    async findOne(@Param('id') id: string) {
+        const result = await this.answersService.findOne(id);
+        return {
+            status: 200,
+            message: result.message,
+            data: result.data,
+        };
+    }
+
+    @Put(':id')
+    async update(@Param('id') id: string, @Body() updateAnswerDto: UpdateAnswerDto) {
+        const result = await this.answersService.update(id, updateAnswerDto);
+        return {
+            status: 200,
+            message: result.message,
+            data: result.data,
+        };
     }
 
     @Delete(':id')
-    remove(@Param('id') id: string): Promise<void> {
-        return this.answersSevice.remove(id)
+    async remove(@Param('id') id: string) {
+        const result = await this.answersService.remove(id);
+        return {
+            status: 200,
+            message: result.message,
+        };
     }
-
-
-
-
 }

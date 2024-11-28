@@ -6,32 +6,54 @@ import { UpdateAudioGuessDto } from './dto/update-audioguessses.dto';
 
 @Controller('audioguesses')
 export class AudioguessesController {
-    constructor(
-        private readonly audioGuessService: AudioguessesService
-    ) { }
+    constructor(private readonly audioGuessService: AudioguessesService) {}
 
     @Post()
-    create(@Body() createAudioGuessDto: CreateAudioGuessDto): Promise<AudioGuesses> {
-        return this.audioGuessService.create(createAudioGuessDto);
+    async create(@Body() createAudioGuessDto: CreateAudioGuessDto) {
+        const result = await this.audioGuessService.create(createAudioGuessDto);
+        return {
+            status: 201,
+            message: result.message,
+            data: result.data,
+        };
     }
 
     @Get()
-    findAll(): Promise<AudioGuesses[]> {
-        return this.audioGuessService.findAll();
+    async findAll() {
+        const result = await this.audioGuessService.findAll();
+        return {
+            status: 200,
+            message: result.message,
+            data: result.data,
+        };
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string): Promise<AudioGuesses> {
-        return this.audioGuessService.findOne(id);
+    async findOne(@Param('id') id: string) {
+        const result = await this.audioGuessService.findOne(id);
+        return {
+            status: 200,
+            message: result.message,
+            data: result.data,
+        };
     }
 
     @Put(':id')
-    update(@Param('id') id: string, @Body() updateAudioGuessDto: UpdateAudioGuessDto): Promise<AudioGuesses> {
-        return this.audioGuessService.update(id, updateAudioGuessDto);
+    async update(@Param('id') id: string, @Body() updateAudioGuessDto: UpdateAudioGuessDto) {
+        const result = await this.audioGuessService.update(id, updateAudioGuessDto);
+        return {
+            status: 200,
+            message: result.message,
+            data: result.data,
+        };
     }
 
     @Delete(':id')
-    delete(@Param('id') id: string): Promise<void> {
-        return this.audioGuessService.remove(id);
+    async remove(@Param('id') id: string) {
+        const result = await this.audioGuessService.remove(id);
+        return {
+            status: 200,
+            message: result.message,
+        };
     }
 }

@@ -9,8 +9,8 @@ export class Options {
     @Column({ length: 255 })
     option_text: string;
 
-    @Column({ default: false })
-    is_correct: boolean;
+    @Column()
+    is_correct: string;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     created_at: Date;

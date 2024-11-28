@@ -12,4 +12,8 @@ export class UpdateQuizDto {
   @IsOptional()
   @IsNumber()
   time?: number;
+
+  @IsOptional()
+  @IsString()
+  userId?: string;
 }

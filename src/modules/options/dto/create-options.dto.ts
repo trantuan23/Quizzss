@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateOptionDto {
   @IsNotEmpty()
@@ -6,8 +6,8 @@ export class CreateOptionDto {
   option_text: string;
 
   @IsOptional()
-  @IsBoolean()
-  is_correct?: boolean;
+  @IsString()
+  is_correct?: string;
 
   @IsNotEmpty()
   @IsUUID()

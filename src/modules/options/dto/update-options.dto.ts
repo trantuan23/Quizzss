@@ -6,7 +6,7 @@ export class UpdateOptionDto {
   option_text?: string;
 
   @IsOptional()
-  @IsBoolean()
-  is_correct?: boolean;
+  @IsString()
+  is_correct?: string;
 
 }

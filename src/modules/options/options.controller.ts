@@ -1,40 +1,58 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { OptionsService } from './options.service';
 import { CreateOptionDto } from './dto/create-options.dto';
-import { Options } from './entities/entities.option';
 import { UpdateOptionDto } from './dto/update-options.dto';
 
 @Controller('options')
 export class OptionsController {
-    constructor (
-        private readonly optionService:OptionsService
-    ){}
+    constructor(private readonly optionService: OptionsService) {}
 
     @Post()
-    create(@Body() createOptionDto:CreateOptionDto):Promise<Options>{
-       return this.optionService.create(createOptionDto)
+    async create(@Body() createOptionDto: CreateOptionDto) {
+        const result = await this.optionService.create(createOptionDto);
+        return {
+            status: 201,
+            message: result.message,
+            data: result.data
+        };
     }
 
     @Get()
-    findAll():Promise<Options[]>{
-        return this.optionService.findAll()
+    async findAll() {
+        const result = await this.optionService.findAll();
+        return {
+            status: 200,
+            message: result.message,
+            data: result.data
+        };
     }
 
     @Get(':id')
-    findOne(id:string):Promise<Options>{
-        return this.optionService.findOne(id)
+    async findOne(@Param('id') id: string) {
+        const result = await this.optionService.findOne(id);
+        return {
+            status: 200,
+            message: result.message,
+            data: result.data
+        };
     }
 
     @Put(':id')
-    update(@Param('id') id:string,@Body() updateOptionDto:UpdateOptionDto ):Promise<Options>{
-        return this.optionService.update(id,updateOptionDto)
+    async update(@Param('id') id: string, @Body() updateOptionDto: UpdateOptionDto) {
+        const result = await this.optionService.update(id, updateOptionDto);
+        return {
+            status: 200,
+            message: result.message,
+            data: result.data
+        };
     }
 
     @Delete(':id')
-    delete(@Param('id') id:string):Promise<void>{
-        return this.optionService.remove(id)
+    async delete(@Param('id') id: string) {
+        const result = await this.optionService.remove(id);
+        return {
+            status: 200,
+            message: result.message
+        };
     }
-
-
-
 }

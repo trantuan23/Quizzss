@@ -1,40 +1,58 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { DragDropAnswersService } from './dragdropanswers.service';
 import { CreateDragDropAnswerDto } from './entities/dto/create.dto';
-import { DragDropAnswers } from './entities/dragdropanswer.entity/dragdropanswer.entity';
 import { UpdateDragDropAnswerDto } from './entities/dto/update.dto';
-
 
 @Controller('dragdropanswers')
 export class DragDropAnswersController {
-    constructor(
-        private readonly dragService: DragDropAnswersService
-    ) { }
+    constructor(private readonly dragService: DragDropAnswersService) {}
 
     @Post()
-    create(@Body() createDrag: CreateDragDropAnswerDto): Promise<DragDropAnswers> {
-        return this.dragService.create(createDrag)
+    async create(@Body() createDrag: CreateDragDropAnswerDto) {
+        const result = await this.dragService.create(createDrag);
+        return {
+            status: 201,
+            message: result.message,
+            data: result.data,
+        };
     }
 
     @Get()
-    findAll(): Promise<DragDropAnswers[]> {
-        return this.dragService.findAll()
+    async findAll() {
+        const result = await this.dragService.findAll();
+        return {
+            status: 200,
+            message: result.message,
+            data: result.data,
+        };
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string): Promise<DragDropAnswers> {
-        return this.dragService.findOne(id)
+    async findOne(@Param('id') id: string) {
+        const result = await this.dragService.findOne(id);
+        return {
+            status: 200,
+            message: result.message,
+            data: result.data,
+        };
     }
 
     @Put(':id')
-    update(@Param('id') id: string, @Body() updateDrag: UpdateDragDropAnswerDto): Promise<DragDropAnswers> {
-        return this.dragService.update(id, updateDrag);
+    async update(@Param('id') id: string, @Body() updateDrag: UpdateDragDropAnswerDto) {
+        const result = await this.dragService.update(id, updateDrag);
+        return {
+            status: 200,
+            message: result.message,
+            data: result.data,
+        };
     }
 
     @Delete(':id')
-    remove(@Param('id') id: string): Promise<void> {
-        return this.dragService.remove(id)
+    async remove(@Param('id') id: string) {
+        const result = await this.dragService.remove(id);
+        return {
+            status: 200,
+            message: result.message,
+        };
     }
-
-
 }
