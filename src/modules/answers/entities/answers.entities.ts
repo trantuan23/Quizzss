@@ -11,14 +11,17 @@ export class Answers {
     @Column({ type: 'text', nullable: true })
     answer_text: string;
 
+    @Column({type:'boolean',nullable:true})
+    is_conrrect : boolean
+
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     submitted_at: Date;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     created_at: Date;
 
-    @ManyToOne(() => Users, (user) => user.answers, { onDelete: 'CASCADE' })
-    user: Users;
+    // @ManyToOne(() => Users, (user) => user.answers, { onDelete: 'CASCADE' })
+    // user: Users;
   
     @ManyToOne(() => Questions, (question) => question.answers, { onDelete: 'CASCADE' })
     question: Questions;

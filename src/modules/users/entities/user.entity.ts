@@ -35,8 +35,6 @@ export class Users {
     @OneToMany(() => Quizzes, (quiz) => quiz.user)
     quizzes: Quizzes[];
   
-    @OneToMany(() => Answers, (answer) => answer.user)
-    answers: Answers[];
   
     @OneToMany(() => Results, (result) => result.user)
     results: Results[];

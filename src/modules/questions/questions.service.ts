@@ -17,33 +17,33 @@ export class QuestionsService {
 
     async create(createQuestionDto: CreateQuestionDto): Promise<{ message: string; data: Questions }> {
         const quiz = await this.quizRepository.findOne({ where: { quizz_id: createQuestionDto.quizzId } });
-    
+
         if (!quiz) {
             throw new NotFoundException(`Quiz with ID ${createQuestionDto.quizzId} not found`);
         }
-    
+
         const formattedQuestionText = createQuestionDto.question_text.trim().toLowerCase();
-    
+
         const existingQuestion = await this.questionRepository.findOne({
             where: {
                 question_text: formattedQuestionText,
                 quizz: quiz,
             },
         });
-    
+
         if (existingQuestion) {
             throw new ConflictException(`A question with the same content already exists in this quiz.`);
         }
-    
-       
-    
+
+
+
         const question = this.questionRepository.create({
             ...createQuestionDto,
             question_text: formattedQuestionText,
-             // Lưu chuỗi đã xử lý vào trường answers
+
             quizz: quiz,
         });
-    
+
         try {
             const savedQuestion = await this.questionRepository.save(question);
             return {
@@ -54,7 +54,7 @@ export class QuestionsService {
             throw new InternalServerErrorException('Không thể tạo câu hỏi. ' + error.message);
         }
     }
-    
+
 
     async findAll(): Promise<{ message: string, data: Questions[] }> {
         const questions = await this.questionRepository.find({ relations: ['quizz'] });
@@ -64,7 +64,7 @@ export class QuestionsService {
         }
 
         return {
-         
+
             message: 'Lấy danh sách câu hỏi thành công!',
             data: questions
         };
@@ -78,7 +78,7 @@ export class QuestionsService {
         }
 
         return {
-           
+
             message: 'Lấy thông tin câu hỏi thành công!',
             data: question
         };
@@ -95,7 +95,7 @@ export class QuestionsService {
             await this.questionRepository.update(id, updateQuestionDto);
             const updatedQuestion = await this.findOne(id);
             return {
-               
+
                 message: 'Cập nhật câu hỏi thành công!',
                 data: updatedQuestion.data
             };
@@ -114,7 +114,7 @@ export class QuestionsService {
         try {
             await this.questionRepository.delete(id);
             return {
-               
+
                 message: 'Xoá câu hỏi thành công!'
             };
         } catch (error) {

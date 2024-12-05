@@ -2,7 +2,6 @@
 import { Answers } from '@/modules/answers/entities/answers.entities';
 import { AudioGuesses } from '@/modules/audioguesses/entities/audioguesses.entity';
 import { DragDropAnswers } from '@/modules/dragdropanswers/entities/dragdropanswer.entity/dragdropanswer.entity';
-import { Options } from '@/modules/options/entities/entities.option';
 import { Quizzes } from '@/modules/quizzes/entities/quizzes.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 
@@ -20,7 +19,6 @@ export class Questions {
   @ManyToOne(() => Quizzes, (quizz) => quizz.questions, { onDelete: 'CASCADE' })
   quizz: Quizzes;
 
-
   @Column({ type: 'text' })
   question_text: string;
 
@@ -35,9 +33,6 @@ export class Questions {
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
-
-  @OneToMany(() => Options, (option) => option.question)
-  options: Options[];
 
   @OneToMany(() => Answers, (answer) => answer.question)
   answers: Answers[];

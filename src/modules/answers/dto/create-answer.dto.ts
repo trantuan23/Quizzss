@@ -5,6 +5,14 @@ export class CreateAnswerDto{
     answer_text: string;
 
     @IsNotEmpty()
-    userId:string
+    is_conrrect: boolean;
+     
+    // @IsNotEmpty()
+    // userId:string
+
+    @IsNotEmpty()
+    questionId:string
+
+
 
 }

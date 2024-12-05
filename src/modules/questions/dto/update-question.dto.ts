@@ -12,7 +12,6 @@ import {
     @IsString()
     question_text: string;
   
-  
     @IsNotEmpty()
     @IsEnum(QuestionType, { message: "Loại câu hỏi không hợp lệ." })
     question_type: QuestionType;

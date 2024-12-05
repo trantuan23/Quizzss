@@ -9,8 +9,13 @@ export class AnswersController {
     constructor(private readonly answersService: AnswersService) {}
 
     @Post()
-    async create(@Body() createAnswerDto: CreateAnswerDto) {
-        const result = await this.answersService.create(createAnswerDto);
+    async create(@Body() createAnswerDto: CreateAnswerDto | CreateAnswerDto[]) {
+        // Nếu client gửi một đối tượng, chuyển thành mảng
+        const dtoArray = Array.isArray(createAnswerDto)
+            ? createAnswerDto
+            : [createAnswerDto];
+
+        const result = await this.answersService.create(dtoArray);
         return {
             status: 201,
             message: result.message,

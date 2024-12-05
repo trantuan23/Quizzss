@@ -2,34 +2,57 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Answers } from './entities/answers.entities';
 import { Repository } from 'typeorm';
-import { Users } from '../users/entities/user.entity';
 import { CreateAnswerDto } from './dto/create-answer.dto';
 import { UpdateAnswerDto } from './dto/update-answer.dto';
+import { Questions } from '../questions/entities/question.entities';
 
 @Injectable()
 export class AnswersService {
     constructor(
         @InjectRepository(Answers)
         private answersRepository: Repository<Answers>,
-        @InjectRepository(Users)
-        private usersRepository: Repository<Users>
+     
+        @InjectRepository(Questions)
+        private questionRepository: Repository<Questions>
     ) {}
 
-    async create(createAnswerDto: CreateAnswerDto): Promise<{ message: string; data: Answers }> {
-        const user = await this.usersRepository.findOne({ where: { user_id: createAnswerDto.userId } });
-        if (!user) {
-            throw new BadRequestException('User not found!');
+    async create(
+        createAnswerDto: CreateAnswerDto[],
+    ): Promise<{ message: string; data: Answers[] }> {
+        if (!createAnswerDto || createAnswerDto.length === 0) {
+            throw new BadRequestException('No answers provided!');
         }
-        const answer = this.answersRepository.create({ ...createAnswerDto, user });
-        const savedAnswer = await this.answersRepository.save(answer);
+
+        // Lấy questionId từ đáp án đầu tiên (giả sử tất cả đều cùng 1 questionId)
+        const questionId = createAnswerDto[0].questionId;
+        const question = await this.questionRepository.findOne({
+            where: { question_id: questionId },
+        });
+
+        if (!question) {
+            throw new BadRequestException('Question not found!');
+        }
+
+        // Tạo danh sách đáp án
+        const answersToSave = createAnswerDto.map((dto) => 
+            this.answersRepository.create({
+                ...dto,
+                question,
+            }),
+        );
+
+        // Lưu tất cả đáp án vào cơ sở dữ liệu
+        const savedAnswers = await this.answersRepository.save(answersToSave);
+
         return {
-            message: 'Tạo câu trả lời thành công!',
-            data: savedAnswer,
+            message: 'Tạo các câu trả lời thành công!',
+            data: savedAnswers,
         };
     }
+    
 
     async findAll(): Promise<{ message: string; data: Answers[] }> {
-        const answers = await this.answersRepository.find({ relations: ['user'] });
+        const answers = await this.answersRepository.find({ relations: ['question'] });
         return {
             message: 'Lấy danh sách câu trả lời thành công!',
             data: answers,

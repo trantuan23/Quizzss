@@ -12,7 +12,7 @@ export class CreateQuestionDto {
 
 
   @IsOptional()
-  @IsUrl({}, { message: 'Địa chỉ URL không hợp lệ.' })  // Đặt các thông số option vào đây
+  @IsUrl({}, { message: 'Địa chỉ URL không hợp lệ.' })
   media_url?: string;
 
   @IsNotEmpty({ message: 'ID quiz không được để trống.' })
