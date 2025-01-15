@@ -26,15 +26,16 @@ import { Subjects } from './modules/subjects/entities/subject.entity';
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
-      type: process.env.DB_TYPE as any,
-      host: process.env.PG_HOST,
-      port: parseInt(process.env.PG_PORT),
-      username: process.env.PG_USER,
-      password: process.env.PG_PASSWORD,
-      database: process.env.PG_DB,
-      entities: [Users, Answers, AudioGuesses, DragDropAnswers, Questions, Quizzes, Results,Classes,Subjects],
+      type: 'postgres', // Đảm bảo bạn đang sử dụng đúng loại cơ sở dữ liệu
+      host: process.env.PG_HOST || 'localhost', // Kiểm tra `host`
+      port: parseInt(process.env.PG_PORT, 10) || 5432, // Kiểm tra `port`, PostgreSQL mặc định là 5432
+      username: process.env.PG_USER || 'your_username', // Kiểm tra tên người dùng
+      password: process.env.PG_PASSWORD || 'your_password', // Kiểm tra mật khẩu
+      database: process.env.PG_DB || 'your_database_name', // Kiểm tra tên cơ sở dữ liệu
+      entities: [Users, Answers, AudioGuesses, DragDropAnswers, Questions, Quizzes, Results, Classes, Subjects],
       synchronize: true,
     }),
+    
     UsersModule,
     QuizzesModule,
     AnswersModule,

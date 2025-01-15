@@ -6,9 +6,10 @@ import { Quizzes } from '../quizzes/entities/quizzes.entity';
 import { Users } from '../users/entities/user.entity';
 import { Results } from './entities/results.entity/results.entity';
 import { Subjects } from '../subjects/entities/subject.entity';
+import { Answers } from '../answers/entities/answers.entities';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Quizzes,Users,Results,Subjects])],
+  imports:[TypeOrmModule.forFeature([Quizzes,Users,Results,Subjects,Answers])],
   providers: [ResultsService],
   controllers: [ResultsController]
 })

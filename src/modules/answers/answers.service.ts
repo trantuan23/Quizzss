@@ -52,15 +52,30 @@ export class AnswersService {
     
 
     async findAll(): Promise<{ message: string; data: Answers[] }> {
-        const answers = await this.answersRepository.find({ relations: ['question'] });
+        const answers = await this.answersRepository.find({ relations: ['question.quizz'] });
+    
+        // Sắp xếp các câu trả lời theo question_id và thứ tự A, B, C, D
+        const sortedAnswers = answers.sort((a, b) => {
+            // So sánh theo question_id trước
+            if (a.question.question_id < b.question.question_id) return -1;
+            if (a.question.question_id > b.question.question_id) return 1;
+    
+            // Nếu cùng question_id, sắp xếp theo thứ tự A, B, C, D từ answer_text
+            const answerOrder = ['A', 'B', 'C', 'D'];
+            const orderA = answerOrder.indexOf(a.answer_text.charAt(0));
+            const orderB = answerOrder.indexOf(b.answer_text.charAt(0));
+            return orderA - orderB;
+        });
+    
         return {
             message: 'Lấy danh sách câu trả lời thành công!',
-            data: answers,
+            data: sortedAnswers,
         };
     }
+    
 
     async findOne(id: string): Promise<{ message: string; data: Answers }> {
-        const answer = await this.answersRepository.findOne({ where: { answer_id: id }, relations: ['user'] });
+        const answer = await this.answersRepository.findOne({ where: { answer_id: id }, relations: ['question'] }); // Xóa 'user'
         if (!answer) {
             throw new BadRequestException('Answer not found!');
         }
@@ -69,6 +84,7 @@ export class AnswersService {
             data: answer,
         };
     }
+    
 
     async update(id: string, updateAnswerDto: UpdateAnswerDto): Promise<{ message: string; data: Answers }> {
         await this.answersRepository.update(id, updateAnswerDto);
@@ -87,3 +103,4 @@ export class AnswersService {
         };
     }
 }
+

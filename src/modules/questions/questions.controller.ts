@@ -43,7 +43,6 @@ export class QuestionsController {
         return {
             status: 200,
             message: result.message,
-            data: result.data
         };
     }
 

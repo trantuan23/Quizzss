@@ -1,32 +1,37 @@
-// src/results/results.entity.ts
 import { Quizzes } from '@/modules/quizzes/entities/quizzes.entity';
 import { Subjects } from '@/modules/subjects/entities/subject.entity';
 import { Users } from '@/modules/users/entities/user.entity';
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+} from 'typeorm';
 
-@Entity()
+@Entity('results')
 export class Results {
-    @PrimaryGeneratedColumn('uuid')
-    result_id: string;
+  @PrimaryGeneratedColumn('uuid')
+  result_id: string;
 
-    @Column({ type: 'decimal', precision: 5, scale: 2 })
-    score: number;
+  @Column({ type: 'decimal', precision: 5, scale: 2 })
+  score: number;
 
-    @CreateDateColumn()
-    completed_at: Date;
-
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    created_at: Date;
-
-    @ManyToOne(() => Users, (user) => user.results, { onDelete: 'CASCADE' })
-    user: Users;
-
-    @ManyToOne(() => Quizzes, (quizz) => quizz.results, { onDelete: 'CASCADE' })
-    quizz: Quizzes;
-
-    @ManyToOne(() => Subjects)
-    subject: Subjects;
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  completed_at: Date;
 
 
+  @ManyToOne(() => Users, (user) => user.results)
+  user: Users;
 
+  @ManyToOne(() => Subjects, (subject) => subject.results)
+  subject: Subjects;
+
+  @ManyToOne(() => Quizzes, (quiz) => quiz.results)
+  quizzes: Quizzes;
+
+  // New column to store all answer_id's in an array
+  @Column('json', { nullable: true })
+  answer_ids: string[];  // Array of answer_ids
 }

@@ -15,6 +15,13 @@ export class CreateQuizzDto {
   @IsNotEmpty()
   userId: string;
 
+  @IsNotEmpty()
+  subjectId: string
+
+  @IsNotEmpty()
+  classId: string
+
+
 
 
 }

@@ -9,9 +9,11 @@ export class QuizzesController {
   constructor(private readonly quizzesService: QuizzesService) {}
 
   @Post()
-  create(@Body() createQuizDto: CreateQuizzDto): Promise<Quizzes> {
-    return this.quizzesService.create(createQuizDto);
-  }
+async createQuiz(@Body() createQuizDto: CreateQuizzDto) {
+  const result = await this.quizzesService.create(createQuizDto);
+  return result; // Trả về object chứa message và data
+}
+
 
   @Get()
   findAll(): Promise<Quizzes[]> {

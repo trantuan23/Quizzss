@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, ConflictException, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Questions } from './entities/question.entities';
+import { Questions, QuestionType } from './entities/question.entities';
 import { Repository } from 'typeorm';
 import { Quizzes } from '../quizzes/entities/quizzes.entity';
 import { CreateQuestionDto } from './dto/create-question.dto';
@@ -57,7 +57,7 @@ export class QuestionsService {
 
 
     async findAll(): Promise<{ message: string, data: Questions[] }> {
-        const questions = await this.questionRepository.find({ relations: ['quizz'] });
+        const questions = await this.questionRepository.find({ relations: ['quizz','answers'] });
 
         if (questions.length === 0) {
             throw new NotFoundException('Không có câu hỏi nào.');
@@ -86,16 +86,22 @@ export class QuestionsService {
 
     async update(id: string, updateQuestionDto: UpdateQuestionDto): Promise<{ message: string, data: Questions }> {
         const question = await this.findOne(id);
-
+    
         if (!question) {
             throw new NotFoundException(`Không tìm thấy câu hỏi có ID: ${id}`);
         }
-
+    
+        // Kiểm tra question_type và xử lý media_url
+        if (updateQuestionDto.question_type === QuestionType.MULTIPLE_CHOICE) {
+            updateQuestionDto.media_url = null;  // Đặt media_url thành null nếu loại câu hỏi là multiple_choice
+        }
+    
         try {
+            // Cập nhật câu hỏi
             await this.questionRepository.update(id, updateQuestionDto);
             const updatedQuestion = await this.findOne(id);
+            
             return {
-
                 message: 'Cập nhật câu hỏi thành công!',
                 data: updatedQuestion.data
             };
@@ -103,7 +109,7 @@ export class QuestionsService {
             throw new InternalServerErrorException('Cập nhật câu hỏi không thành công. ' + error.message);
         }
     }
-
+    
     async remove(id: string): Promise<{ message: string }> {
         const question = await this.findOne(id);
 

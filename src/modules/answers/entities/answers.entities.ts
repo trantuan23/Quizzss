@@ -20,11 +20,11 @@ export class Answers {
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     created_at: Date;
 
-    // @ManyToOne(() => Users, (user) => user.answers, { onDelete: 'CASCADE' })
-    // user: Users;
   
     @ManyToOne(() => Questions, (question) => question.answers, { onDelete: 'CASCADE' })
     question: Questions;
+
+
 
 
 }

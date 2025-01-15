@@ -7,9 +7,6 @@ export class CreateAnswerDto{
     @IsNotEmpty()
     is_conrrect: boolean;
      
-    // @IsNotEmpty()
-    // userId:string
-
     @IsNotEmpty()
     questionId:string
 

@@ -6,31 +6,35 @@ import { UpdateResultDto } from './dto/update-result.dto';
 
 @Controller('results')
 export class ResultsController {
-    constructor(private readonly resultService:ResultsService){}
+  constructor(private readonly resultService: ResultsService) {}
 
-    @Post()
-    create(@Body() createResultDto:CreateResultDto):Promise<Results>{
-        return this.resultService.create(createResultDto)
-    }
+  // Tạo mới kết quả
+  @Post()
+  async create(@Body() createResultDto: CreateResultDto): Promise<Results> {
+    return this.resultService.create(createResultDto); // Đảm bảo phương thức createResult() trong service trả về kết quả
+  }
 
-    @Get()
-    findAll():Promise<Results[]>{
-        return this.resultService.findAll()
-    }
+  // Lấy tất cả kết quả
+  @Get()
+  async findAll(): Promise<Results[]> {
+    return this.resultService.findAll(); // Đảm bảo phương thức này được định nghĩa trong service
+  }
 
-    @Get(':id')
-    findOne(@Param('id') id:string):Promise<Results>{
-        return this.resultService.findOne(id)
-    }
+  // Lấy một kết quả theo ID
+  @Get(':id')
+  async findOne(@Param('id') id: string): Promise<Results> {
+    return this.resultService.findOne(id); // Đảm bảo phương thức này trả về một kết quả cụ thể
+  }
 
-    @Put(':id')
-    update(@Param('id') id:string, @Body() updateResultDto:UpdateResultDto):Promise<Results>{
-        return this.resultService.update(id,updateResultDto)
-    }
+  // Cập nhật kết quả
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() updateResultDto: UpdateResultDto): Promise<Results> {
+    return this.resultService.update(id, updateResultDto); // Đảm bảo phương thức update() trong service đã hoạt động chính xác
+  }
 
-    @Delete(':id')
-    remove(@Param('id') id:string):Promise<void>{
-      return this.resultService.remove(id)
-    }
+  // Xóa kết quả
+  @Delete(':id')
+  async remove(@Param('id') id: string): Promise<void> {
+    return this.resultService.remove(id); // Đảm bảo phương thức remove() trong service đã hoạt động chính xác
+  }
 }
-
