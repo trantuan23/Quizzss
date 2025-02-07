@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { Users } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,6 +6,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Classes } from '../classes/entities/class.entity';
 import { UserRole } from './dto/create-user.dto'; // Import enum UserRole
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
@@ -13,7 +14,8 @@ export class UsersService {
         @InjectRepository(Users)
         private readonly userRepository: Repository<Users>,
         @InjectRepository(Classes)
-        private readonly classRepository: Repository<Classes>
+        private readonly classRepository: Repository<Classes>,
+        private readonly jwtService: JwtService 
     ) { }
 
     async create(createUserDto: CreateUserDto): Promise<Users> {
@@ -74,12 +76,20 @@ export class UsersService {
     
 
     async findAll(): Promise<Users[]> {
-        const users = await this.userRepository.find({ relations: ['class'] });
+        const users = await this.userRepository.find({
+            relations: ['class'],
+            order: {
+                username: 'ASC', // Sắp xếp theo tên tài khoản A-Z
+            },
+        });
+    
         if (!users.length) {
             throw new NotFoundException('No users found.');
         }
+    
         return users;
     }
+    
 
     async findOne(user_id: string): Promise<Users> {
         const user = await this.userRepository.findOne({
@@ -149,6 +159,45 @@ export class UsersService {
                 code: 'UPDATE_USER_FAILED'
             });
         }
+    }
+
+    async approveAccount(user_id: string): Promise<Users> {
+        const user = await this.findOne(user_id);
+
+        // Kiểm tra nếu người dùng đã được phê duyệt
+        if (user.isActive) {
+            throw new BadRequestException({
+                message: 'Tài khoản này đã được phê duyệt.',
+                code: 'USER_ALREADY_APPROVED'
+            });
+        }
+
+        user.isActive = true;
+
+        return this.userRepository.save(user);
+    }
+
+    async deactivateAccount(user_id: string): Promise<Users> {
+        const user = await this.findOne(user_id);
+    
+        // Kiểm tra nếu người dùng đã bị hủy kích hoạt
+        if (!user.isActive) {
+            throw new BadRequestException({
+                message: 'Tài khoản này đã bị hủy kích hoạt.',
+                code: 'USER_ALREADY_DEACTIVATED'
+            });
+        }
+    
+        user.isActive = false;
+    
+        return this.userRepository.save(user);
+    }
+    
+
+
+    async logout(userId: number): Promise<{ message: string }> {
+        await this.userRepository.update(userId, { refresh_token: null });
+        return { message: 'Đăng xuất thành công' };
     }
     
     

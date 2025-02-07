@@ -28,6 +28,12 @@ export class Users {
     })
     role: UserRole;
 
+    @Column({ default: false })
+    isActive: boolean;
+
+    @Column({ nullable: true }) // Token có thể null
+    refresh_token: string;
+
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     created_at: Date;
 

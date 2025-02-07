@@ -16,6 +16,11 @@ export class Quizzes {
 
   @Column({ type: 'text', nullable: true })
   description: string;
+
+  @Column({ type: 'text', nullable: true })
+  article: string;
+
+
   
   @Column()
   time : number

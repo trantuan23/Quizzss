@@ -1,6 +1,4 @@
-// src/answers/answers.entity.ts
 import { Questions } from '@/modules/questions/entities/question.entities';
-import { Users } from '@/modules/users/entities/user.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
 
 @Entity()
@@ -11,8 +9,11 @@ export class Answers {
     @Column({ type: 'text', nullable: true })
     answer_text: string;
 
-    @Column({type:'boolean',nullable:true})
-    is_conrrect : boolean
+    @Column({ type: 'boolean', nullable: true })
+    is_correct: boolean;
+
+    @Column({ type: 'text', nullable: true })
+    reason: string | null;  // Đảm bảo lý do có thể là null khi đáp án sai
 
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     submitted_at: Date;
@@ -20,11 +21,7 @@ export class Answers {
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     created_at: Date;
 
-  
     @ManyToOne(() => Questions, (question) => question.answers, { onDelete: 'CASCADE' })
     question: Questions;
-
-
-
-
 }
+

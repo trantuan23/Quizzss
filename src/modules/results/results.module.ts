@@ -7,9 +7,10 @@ import { Users } from '../users/entities/user.entity';
 import { Results } from './entities/results.entity/results.entity';
 import { Subjects } from '../subjects/entities/subject.entity';
 import { Answers } from '../answers/entities/answers.entities';
+import { Questions } from '../questions/entities/question.entities';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Quizzes,Users,Results,Subjects,Answers])],
+  imports:[TypeOrmModule.forFeature([Quizzes,Users,Results,Subjects,Answers,Questions])],
   providers: [ResultsService],
   controllers: [ResultsController]
 })

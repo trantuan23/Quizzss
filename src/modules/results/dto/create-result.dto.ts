@@ -1,15 +1,18 @@
-import { IsUUID, IsNotEmpty, IsArray, ValidateNested, IsDecimal } from 'class-validator';
+import { IsUUID, IsNotEmpty, IsArray, ValidateNested, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
 class SelectedAnswerDto {
     @IsUUID()
-    answer_id: string;
+    @IsOptional()
+    answer_id?: string;
 
     @IsNotEmpty()
-    answer_text: string;
+    @IsOptional()
+    answer_text?: string;
 
     @IsNotEmpty()
-    is_conrrect: boolean;
+    @IsOptional()
+    is_correct?: boolean;
 }
 
 class AnswerDto {
@@ -19,10 +22,14 @@ class AnswerDto {
     @IsNotEmpty()
     question_text: string;
 
+    @IsOptional() // Không yêu cầu score khi không có đáp án
+    score?: number; // Có thể để score là tùy chọn (optional)
+
     @ValidateNested()
     @Type(() => SelectedAnswerDto)
-    selected_answer: SelectedAnswerDto;
+    selected_answer: SelectedAnswerDto | null ;
 }
+
 
 export class CreateResultDto {
     @IsUUID()

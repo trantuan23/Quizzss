@@ -1,15 +1,18 @@
-import { IsEmpty, IsNotEmpty, IsString } from "class-validator";
+import { IsString, IsBoolean, IsOptional, IsUUID } from 'class-validator';
 
-export class CreateAnswerDto{
-    @IsNotEmpty()
+export class CreateAnswerDto {
+    @IsUUID()
+    questionId: string;
+
+    @IsString()
+    @IsOptional()
     answer_text: string;
 
-    @IsNotEmpty()
-    is_conrrect: boolean;
-     
-    @IsNotEmpty()
-    questionId:string
+    @IsBoolean()
+    @IsOptional()
+    is_correct: boolean;
 
-
-
+    @IsString()
+    @IsOptional()
+    reason: string | null;  // Đảm bảo lý do có thể là null
 }

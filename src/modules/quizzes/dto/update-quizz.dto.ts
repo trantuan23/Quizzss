@@ -7,6 +7,10 @@ export class UpdateQuizDto {
 
   @IsOptional()
   @IsString()
+  article?: string;
+
+  @IsOptional()
+  @IsString()
   description?: string;
 
   @IsOptional()

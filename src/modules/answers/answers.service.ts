@@ -16,66 +16,71 @@ export class AnswersService {
         private questionRepository: Repository<Questions>
     ) {}
 
-    async create(
-        createAnswerDto: CreateAnswerDto[],
-    ): Promise<{ message: string; data: Answers[] }> {
+    async create(createAnswerDto: CreateAnswerDto[]): Promise<{ message: string; data: Answers[] }> {
         if (!createAnswerDto || createAnswerDto.length === 0) {
             throw new BadRequestException('No answers provided!');
         }
-
+    
         // Lấy questionId từ đáp án đầu tiên (giả sử tất cả đều cùng 1 questionId)
         const questionId = createAnswerDto[0].questionId;
         const question = await this.questionRepository.findOne({
             where: { question_id: questionId },
         });
-
+    
         if (!question) {
             throw new BadRequestException('Question not found!');
         }
-
+    
         // Tạo danh sách đáp án
-        const answersToSave = createAnswerDto.map((dto) => 
-            this.answersRepository.create({
+        const answersToSave = createAnswerDto.map((dto) => {
+            const { is_correct, reason } = dto;
+    
+            // Nếu đáp án sai thì reason có thể là null
+            const answerReason = is_correct ? reason : null;
+    
+            return this.answersRepository.create({
                 ...dto,
+                reason: answerReason,  // Đảm bảo lý do chỉ được lưu khi đáp án đúng
                 question,
-            }),
-        );
-
+            });
+        });
+    
         // Lưu tất cả đáp án vào cơ sở dữ liệu
         const savedAnswers = await this.answersRepository.save(answersToSave);
-
+    
         return {
             message: 'Tạo các câu trả lời thành công!',
             data: savedAnswers,
         };
     }
     
+    
 
     async findAll(): Promise<{ message: string; data: Answers[] }> {
-        const answers = await this.answersRepository.find({ relations: ['question.quizz'] });
-    
-        // Sắp xếp các câu trả lời theo question_id và thứ tự A, B, C, D
-        const sortedAnswers = answers.sort((a, b) => {
-            // So sánh theo question_id trước
-            if (a.question.question_id < b.question.question_id) return -1;
-            if (a.question.question_id > b.question.question_id) return 1;
-    
-            // Nếu cùng question_id, sắp xếp theo thứ tự A, B, C, D từ answer_text
-            const answerOrder = ['A', 'B', 'C', 'D'];
-            const orderA = answerOrder.indexOf(a.answer_text.charAt(0));
-            const orderB = answerOrder.indexOf(b.answer_text.charAt(0));
-            return orderA - orderB;
+        const answers = await this.answersRepository.find({
+          relations: ['question.quizz'],
         });
-    
+      
+        // Sắp xếp các câu trả lời theo created_at (cũ nhất trước)
+        const sortedAnswers = answers.sort((a, b) => {
+      
+          // Sắp xếp theo thứ tự A, B, C, D từ answer_text
+          const answerOrder = ['A', 'B', 'C', 'D'];
+          const orderA = answerOrder.indexOf(a.answer_text.charAt(0));
+          const orderB = answerOrder.indexOf(b.answer_text.charAt(0));
+          return orderA - orderB;
+        });
+      
         return {
-            message: 'Lấy danh sách câu trả lời thành công!',
-            data: sortedAnswers,
+          message: 'Lấy danh sách câu trả lời thành công!',
+          data: sortedAnswers,
         };
-    }
+      }
+      
     
 
     async findOne(id: string): Promise<{ message: string; data: Answers }> {
-        const answer = await this.answersRepository.findOne({ where: { answer_id: id }, relations: ['question'] }); // Xóa 'user'
+        const answer = await this.answersRepository.findOne({ where: { answer_id: id }, relations: ['question.answers'] }); // Xóa 'user'
         if (!answer) {
             throw new BadRequestException('Answer not found!');
         }
@@ -94,6 +99,7 @@ export class AnswersService {
             data: updatedAnswer.data,
         };
     }
+    
 
     async remove(id: string): Promise<{ message: string }> {
         await this.findOne(id); // Kiểm tra nếu Answer tồn tại

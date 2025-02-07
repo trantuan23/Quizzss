@@ -5,6 +5,10 @@ export class CreateQuizzDto {
   @IsString()
   title: string;
 
+  @IsNotEmpty()
+  @IsString()
+  article: string;
+
   @IsOptional()
   @IsString()
   description?: string;
