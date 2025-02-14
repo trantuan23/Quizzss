@@ -22,8 +22,9 @@ export class Results {
   completed_at: Date;
 
 
-  @ManyToOne(() => Users, (user) => user.results)
+  @ManyToOne(() => Users, (user) => user.results, { onDelete: 'CASCADE' })
   user: Users;
+
 
   @ManyToOne(() => Subjects, (subject) => subject.results)
   subject: Subjects;

@@ -1,11 +1,14 @@
-import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, HttpException, HttpStatus, Post, Req, UnauthorizedException } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthService } from './auth.service';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService) {}
+    constructor(private readonly authService: AuthService) { }
 
     // Đăng ký người dùng mới
     @Post('register')
@@ -28,9 +31,40 @@ export class AuthController {
         return this.authService.refreshAccessToken(refresh_token);
     }
 
-    // Đăng xuất và xóa refresh token
+    @Post('forgot-password')
+    async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+        return this.authService.forgotPassword(forgotPasswordDto);
+    }
+
+    @Post('reset-password')
+    async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+        return this.authService.resetPassword(resetPasswordDto);
+    }
+
+    @Post('verify-otp')
+    async verifyOtp(@Body() verifyOtpDto: { email: string; otpCode: string }) {
+        return this.authService.verifyOtp(verifyOtpDto.email, verifyOtpDto.otpCode);
+    }
+
+    @Post('verify-token')
+    async verifyToken(@Body('refresh_token') refresh_token: string) {
+        if (!refresh_token) {
+            throw new UnauthorizedException('Token không được để trống.');
+        }
+        return this.authService.verifyToken(refresh_token);
+    }
+
+
     @Post('logout')
-    async logout(@Body('userId') userId: string) {
+    async logout(@Body() body: { userId: string }) {
+        const { userId } = body;
+        if (!userId) {
+            throw new HttpException('User ID is missing', HttpStatus.BAD_REQUEST);
+        }
         return this.authService.logout(userId);
     }
+
+
 }
+
+

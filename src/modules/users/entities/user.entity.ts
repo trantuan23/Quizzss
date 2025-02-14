@@ -1,4 +1,3 @@
-import { Answers } from "@/modules/answers/entities/answers.entities";
 import { Classes } from "@/modules/classes/entities/class.entity";
 import { Quizzes } from "@/modules/quizzes/entities/quizzes.entity";
 import { Results } from "@/modules/results/entities/results.entity/results.entity";
@@ -34,6 +33,9 @@ export class Users {
     @Column({ nullable: true }) // Token có thể null
     refresh_token: string;
 
+    @Column({ nullable: true })
+    code_otp: string;
+
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     created_at: Date;
 
@@ -42,8 +44,9 @@ export class Users {
     quizzes: Quizzes[];
 
   
-    @OneToMany(() => Results, (result) => result.user)
+    @OneToMany(() => Results, (result) => result.user, { cascade: true, onDelete: 'CASCADE' })
     results: Results[];
+
 
     @ManyToOne(() => Classes, (cls) => cls.user, { nullable: true })
     class: Classes;

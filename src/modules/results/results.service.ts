@@ -4,7 +4,6 @@ import { Results } from './entities/results.entity/results.entity';
 import { In, Repository } from 'typeorm';
 import { Users } from '../users/entities/user.entity';
 import { CreateResultDto } from './dto/create-result.dto';
-import { UpdateResultDto } from './dto/update-result.dto';
 import { Subjects } from '../subjects/entities/subject.entity';
 import { Quizzes } from '../quizzes/entities/quizzes.entity';
 import { Answers } from '../answers/entities/answers.entities';
@@ -88,7 +87,7 @@ export class ResultsService {
       // Lấy thông tin kết quả từ bảng Results
       const result = await this.resultReponsitory.findOne({
         where: { result_id: id },
-        relations: ['quizzes.questions.answers'],
+        relations: ['quizzes.questions.answers', 'user'],
         order: {
           quizzes: {
             questions: {
@@ -136,12 +135,6 @@ export class ResultsService {
       };
     }
 
-
-
-    async update(id: string, updateResultDto: UpdateResultDto): Promise<Results> {
-        await this.resultReponsitory.update(id, updateResultDto)
-        return this.findOne(id)
-    }
 
     async remove(id: string): Promise<void> {
         await this.resultReponsitory.delete(id)

@@ -6,13 +6,13 @@ import { UpdateQuizDto } from './dto/update-quizz.dto';
 
 @Controller('quizzes')
 export class QuizzesController {
-  constructor(private readonly quizzesService: QuizzesService) {}
+  constructor(private readonly quizzesService: QuizzesService) { }
 
   @Post()
-async createQuiz(@Body() createQuizDto: CreateQuizzDto) {
-  const result = await this.quizzesService.create(createQuizDto);
-  return result; // Trả về object chứa message và data
-}
+  async createQuiz(@Body() createQuizDto: CreateQuizzDto) {
+    const result = await this.quizzesService.create(createQuizDto);
+    return result; // Trả về object chứa message và data
+  }
 
 
   @Get()

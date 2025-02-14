@@ -7,6 +7,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Classes } from '../classes/entities/class.entity';
 import { UserRole } from './dto/create-user.dto'; // Import enum UserRole
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -46,7 +47,14 @@ export class UsersService {
                     });
                 }
     
-                const user = this.userRepository.create({ ...createUserDto, class: foundClass });
+                // Băm mật khẩu trước khi tạo người dùng
+                const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    
+                const user = this.userRepository.create({ 
+                    ...createUserDto, 
+                    password: hashedPassword, 
+                    class: foundClass 
+                });
                 return this.userRepository.save(user);
     
             } else {
@@ -57,7 +65,14 @@ export class UsersService {
                         code: 'INVALID_ROLE_CLASS_SELECTION'
                     });
                 }
-                const user = this.userRepository.create({ ...createUserDto });
+    
+                // Băm mật khẩu trước khi tạo người dùng
+                const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    
+                const user = this.userRepository.create({ 
+                    ...createUserDto, 
+                    password: hashedPassword 
+                });
                 return this.userRepository.save(user);
             }
         } catch (error) {
@@ -94,14 +109,16 @@ export class UsersService {
     async findOne(user_id: string): Promise<Users> {
         const user = await this.userRepository.findOne({
             where: { user_id },
-            relations: ['class'],
+            relations: ['results', 'results.quizzes','results.quizzes.class','results.quizzes.subject', 'results.quizzes.questions', 'results.quizzes.questions.answers','class'],
         });
-
+    
         if (!user) {
             throw new NotFoundException(`User with ID ${user_id} not found.`);
         }
+    
         return user;
     }
+    
 
     async update(user_id: string, updateUserDto: UpdateUserDto): Promise<Users> {
         try {

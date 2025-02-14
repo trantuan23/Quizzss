@@ -1,27 +1,25 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '@/modules/users/users.service';
+import { ConfigService } from '@nestjs/config';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    private jwtService: JwtService,
-    private usersService: UsersService,
+    private readonly usersService: UsersService,
+    private readonly configService: ConfigService
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET || 'your-secret-key',
+      secretOrKey: configService.get<string>('JWT_SECRET'), // ✅ Lấy secret từ ConfigService
     });
   }
 
   async validate(payload: any) {
-    // Lấy thông tin user từ payload (userId)
     const user = await this.usersService.findOne(payload.userId);
     if (!user) {
-      throw new UnauthorizedException('User không tồn tại');
+      throw new UnauthorizedException('Người dùng không tồn tại.');
     }
     return user;
   }
