@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { Users } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -90,22 +90,30 @@ export class UsersService {
     
     
 
-    async findAll(): Promise<Users[]> {
-        const users = await this.userRepository.find({
-            relations: ['class'],
-            order: {
-                username: 'ASC', // Sắp xếp theo tên tài khoản A-Z
-            },
-        });
-    
-        if (!users.length) {
-            throw new NotFoundException('No users found.');
+    async findAll(requestUser: Users): Promise<Users[]> {
+        // Nếu user có quyền ADMIN -> lấy tất cả users
+        if (requestUser.role === UserRole.ADMIN) {
+            return this.userRepository.find({
+                relations: ['class'],
+                order: { username: 'ASC' },
+            });
         }
     
-        return users;
+        // Nếu user có quyền TEACHER -> chỉ lấy thông tin chính họ
+        if (requestUser.role === UserRole.TEACHER) {
+            return this.userRepository.find({
+                where: { user_id: requestUser.user_id }, // Chỉ lấy user có ID trùng với user đang request
+                relations: ['class'],
+            });
+        }
+    
+        // Nếu user có quyền khác -> không có quyền truy cập
+        throw new ForbiddenException('You do not have permission to view this list.');
     }
     
-
+    
+    
+    
     async findOne(user_id: string): Promise<Users> {
         const user = await this.userRepository.findOne({
             where: { user_id },

@@ -24,6 +24,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import * as path from 'path';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { JwtModule } from '@nestjs/jwt';
+import { BackupModule } from './backup/backup.module';
 
 
 
@@ -77,8 +78,14 @@ import { JwtModule } from '@nestjs/jwt';
       secret: 'your-secret',  // Cấu hình secret hoặc các tham số khác
       signOptions: { expiresIn: '60m' }, // Tùy chỉnh thời gian hết hạn JWT
     }),
+    BackupModule,
+    
   
   ],
+  
+  providers: [],
+  
+  controllers: [],
   
  
 

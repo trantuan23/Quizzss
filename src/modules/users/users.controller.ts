@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import {  UserRole, Users } from './entities/user.entity';
@@ -20,11 +20,10 @@ export class UsersController {
         return this.userService.create(createUser);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get()
-     @UseGuards(JwtAuthGuard, RolesGuard)
-     @Roles(UserRole.ADMIN)
-     findAll(): Promise<Users[]> {
-      return this.userService.findAll();
+    async findAll(@Request() req) {
+        return this.userService.findAll(req.user); 
     }
     
 
@@ -66,6 +65,7 @@ export class UsersController {
     async logout(@Body('userId') userId: number) {
         return this.userService.logout(userId);
     }
+
 
 
 }

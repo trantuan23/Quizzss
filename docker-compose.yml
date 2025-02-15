@@ -12,13 +12,14 @@ services:
       - /usr/src/app/node_modules
     environment:
       - DB_TYPE=postgres
-      - PG_HOST=db 
+      - PG_HOST=db
       - PG_USER=postgres
       - PG_PASSWORD=postgres
-      - PG_DB=quizzs
+      - PG_DB=quizzs  # Đảm bảo là tên cơ sở dữ liệu chính xác
       - PG_PORT=5432
     depends_on:
       - db
+
   db:
     container_name: db
     image: postgres:12
@@ -27,8 +28,10 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=PG_DB
+      - POSTGRES_DB=quizzs  # Đảm bảo tên cơ sở dữ liệu trùng với PG_DB trong nestapp
+    command: postgres -h 0.0.0.0
     volumes:
       - pgdata:/var/lib/postgresql/data
+
 volumes:
   pgdata: {}

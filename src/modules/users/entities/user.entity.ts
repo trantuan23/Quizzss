@@ -25,6 +25,7 @@ export class Users {
         type: 'enum',
         enum: UserRole,
     })
+    @Column({ type: 'enum', enum: UserRole }) // Hoặc { type: 'varchar' }
     role: UserRole;
 
     @Column({ default: false })
