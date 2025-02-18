@@ -1,31 +1,28 @@
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsArray, IsNotEmpty, IsString, IsNumber } from 'class-validator';
 
-export class CreateQuizzDto {
+export class CreateQuizDto {
   @IsNotEmpty()
   @IsString()
   title: string;
 
-  @IsNotEmpty()
-  @IsString()
-  article: string;
-
-  @IsOptional()
   @IsString()
   description?: string;
 
-  @IsNotEmpty()
+  @IsString()
+  article?: string;
+
+  @IsNumber()
   time: number;
 
   @IsNotEmpty()
+  @IsString()
   userId: string;
 
-  @IsNotEmpty()
-  subjectId: string
+  @IsArray()
+  @IsString({ each: true })
+  classIds: string[];
 
   @IsNotEmpty()
-  classId: string
-
-
-
-
+  @IsString({ each: true })
+  subjectId: string;
 }

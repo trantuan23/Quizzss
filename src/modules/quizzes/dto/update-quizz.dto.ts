@@ -22,8 +22,7 @@ export class UpdateQuizDto {
   userId?: string;
 
   @IsOptional()
-  @IsString()
-  classId?: string;
+  classIds?: [];
 
   @IsOptional()
   @IsString()

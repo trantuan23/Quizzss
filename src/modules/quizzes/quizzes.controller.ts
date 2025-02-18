@@ -1,24 +1,26 @@
 import { Controller, Post, Get, Put, Delete, Param, Body } from '@nestjs/common';
 import { QuizzesService } from './quizzes.service';
 import { Quizzes } from './entities/quizzes.entity';
-import { CreateQuizzDto } from './dto/create-quizz.dto';
 import { UpdateQuizDto } from './dto/update-quizz.dto';
+import { CreateQuizDto } from './dto/create-quizz.dto';
 
 @Controller('quizzes')
 export class QuizzesController {
   constructor(private readonly quizzesService: QuizzesService) { }
 
   @Post()
-  async createQuiz(@Body() createQuizDto: CreateQuizzDto) {
+  async createQuiz(@Body() createQuizDto: CreateQuizDto) {
     const result = await this.quizzesService.create(createQuizDto);
-    return result; // Trả về object chứa message và data
+    return result;
   }
 
 
   @Get()
-  findAll(): Promise<Quizzes[]> {
-    return this.quizzesService.findAll();
+  async findAll(): Promise<{ message: string; data: Quizzes[] }> {
+    const quizzes = await this.quizzesService.findAll();
+    return quizzes
   }
+
 
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Quizzes> {

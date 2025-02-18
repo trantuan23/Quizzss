@@ -17,7 +17,7 @@ import { AudioGuessesModule } from './modules/audioguesses/audioguesses.module';
 import { DragDropAnswersModule } from './modules/dragdropanswers/dragdropanswers.module';
 import { ClassesModule } from './modules/classes/classes.module';
 import { SubjectsModule } from './modules/subjects/subjects.module';
-import { Classes } from './modules/classes/entities/class.entity';
+import { Classes } from './modules/classes/entities/classes.entity';
 import { Subjects } from './modules/subjects/entities/subject.entity';
 import { AuthModule } from './modules/auth/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';

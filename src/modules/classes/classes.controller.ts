@@ -2,7 +2,7 @@ import { Controller, Post, Body, Get, Param, Put, Delete, Query } from '@nestjs/
 import { ClassesService } from './classes.service';
 import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
-import { Classes } from './entities/class.entity';
+import { Classes } from './entities/classes.entity';
 
 @Controller('classes')
 export class ClassesController {

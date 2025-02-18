@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Classes } from './entities/class.entity';
+import { Classes } from './entities/classes.entity';
 import { Repository } from 'typeorm';
 import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';

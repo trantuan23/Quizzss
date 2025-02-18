@@ -1,4 +1,4 @@
-import { Classes } from "@/modules/classes/entities/class.entity";
+import { Classes } from "@/modules/classes/entities/classes.entity";
 import { Quizzes } from "@/modules/quizzes/entities/quizzes.entity";
 import { Results } from "@/modules/results/entities/results.entity/results.entity";
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
@@ -51,6 +51,5 @@ export class Users {
 
     @ManyToOne(() => Classes, (cls) => cls.user, { nullable: true })
     class: Classes;
-
 
 }

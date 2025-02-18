@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res, HttpStatus, Get, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Res, HttpStatus, Get, UseGuards, Delete, Param } from '@nestjs/common';
 import { BackupService } from './backup.service';
 import { Response } from 'express';
 import { JwtAuthGuard } from '@/modules/auth/jwt-auth.guard';
@@ -45,5 +45,12 @@ export class BackupController {
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error });
     }
+  }
+
+  @Delete('/delete/:fileName')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async deleteBackup(@Param('fileName') fileName: string) {
+    return this.backupService.deleteBackupFile(fileName);
   }
 }

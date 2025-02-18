@@ -9,6 +9,7 @@ import { LoginDto } from './dto/login.dto';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { Classes } from '../classes/entities/classes.entity';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +18,8 @@ export class AuthService {
         private readonly userRepository: Repository<Users>,
         private readonly jwtService: JwtService,
         private readonly mailerService: MailerService,
+        @InjectRepository(Classes)
+        private readonly classRepository: Repository<Classes>,
     ) { }
 
     // Đăng ký người dùng mới
@@ -25,11 +28,18 @@ export class AuthService {
         if (existingUser) {
             throw new BadRequestException('Email đã được sử dụng.');
         }
-
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(registerDto.password, salt);
 
-        const user = this.userRepository.create({ ...registerDto, password: hashedPassword });
+        const foundClass = await this.classRepository.findOne({ where: { class_id: registerDto.classId } });
+        if (!foundClass) {
+            throw new BadRequestException({
+                message: `Lớp học với ID ${registerDto.classId} không tồn tại.`,
+                code: 'CLASS_NOT_FOUND'
+            });
+        }
+
+        const user = this.userRepository.create({ ...registerDto, password: hashedPassword, class: foundClass });
         return this.userRepository.save(user);
     }
 
@@ -52,8 +62,8 @@ export class AuthService {
 
         const payload = { userId: user.user_id };
         const accessToken = this.jwtService.sign(payload, {
-            secret: process.env.JWT_SECRET,  // Dùng secret key từ biến môi trường
-            expiresIn: '1h',  // Hết hạn trong 1 giờ
+            secret: process.env.JWT_SECRET,
+            expiresIn: '4h',
         });
 
         await this.userRepository.update(user.user_id, { refresh_token: accessToken });

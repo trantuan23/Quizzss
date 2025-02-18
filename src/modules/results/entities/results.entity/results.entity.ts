@@ -6,7 +6,6 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
 
@@ -29,7 +28,7 @@ export class Results {
   @ManyToOne(() => Subjects, (subject) => subject.results)
   subject: Subjects;
 
-  @ManyToOne(() => Quizzes, (quiz) => quiz.results)
+  @ManyToOne(() => Quizzes, (quiz) => quiz.results,{ onDelete: 'CASCADE' })
   quizzes: Quizzes;
 
   // New column to store all answer_id's in an array

@@ -82,6 +82,28 @@ export class BackupService {
     });
   }
 
+  // ✅ Hàm xoá file backup theo tên
+  deleteBackupFile(fileName: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const filePath = path.join(this.backupDir, fileName);
+
+      if (!fs.existsSync(filePath)) {
+        reject(`File not found: ${fileName}`);
+        return;
+      }
+
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error(`Failed to delete file: ${err.message}`);
+          reject(`Failed to delete file: ${err.message}`);
+          return;
+        }
+        console.log(`File deleted successfully: ${fileName}`);
+        resolve(`File deleted successfully: ${fileName}`);
+      });
+    });
+  }
+
 
 
 }

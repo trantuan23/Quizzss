@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Quizzes } from './entities/quizzes.entity';
 import { Users } from '@/modules/users/entities/user.entity';
-import { CreateQuizzDto } from './dto/create-quizz.dto';
 import { UpdateQuizDto } from './dto/update-quizz.dto';
-import { Classes } from '../classes/entities/class.entity';
+import { Classes } from '../classes/entities/classes.entity';
 import { Subjects } from '../subjects/entities/subject.entity';
+import { CreateQuizDto } from './dto/create-quizz.dto';
 
 @Injectable()
 export class QuizzesService {
@@ -23,7 +23,7 @@ export class QuizzesService {
     private readonly subjectReponsitory: Repository<Subjects>
   ) { }
 
-  async create(createQuizDto: CreateQuizzDto): Promise<{ message: string; data: Quizzes }> {
+  async create(createQuizDto: CreateQuizDto): Promise<{ message: string; data: Quizzes }> {
     try {
       // Kiểm tra user
       const user = await this.usersRepository.findOne({
@@ -35,75 +35,93 @@ export class QuizzesService {
           code: 'USER_NOT_FOUND',
         });
       }
-
-      // Kiểm tra class
-      const cla = await this.classReponsitory.findOne({
-        where: { class_id: createQuizDto.classId },
+  
+      // Kiểm tra môn học (subject)
+      const subject = await this.subjectReponsitory.findOne({
+        where: { subject_id: createQuizDto.subjectId },
       });
-      if (!cla) {
+  
+      if (!subject) {
         throw new BadRequestException({
-          message: `Class với ID ${createQuizDto.classId} không tồn tại.`,
+          message: `Môn học với ID ${createQuizDto.subjectId} không tồn tại!`,
+          code: 'SUB_NOT_FOUND',
+        });
+      }
+  
+      // Kiểm tra danh sách lớp học (classes)
+      const classIds = createQuizDto.classIds || []; // Đảm bảo classIds luôn là một mảng
+      const classes = classIds.length > 0
+        ? await this.classReponsitory.find({ where: { class_id: In(classIds) } })
+        : [];
+  
+      if (classes.length !== classIds.length) {
+        throw new BadRequestException({
+          message: `Một hoặc nhiều Class với ID đã nhập không tồn tại.`,
           code: 'CLASS_NOT_FOUND',
         });
       }
-
-      // Kiểm tra subject
-      const sub = await this.subjectReponsitory.findOne({
-        where: { subject_id: createQuizDto.subjectId },
-      });
-      if (!sub) {
-        throw new BadRequestException({
-          message: `Subject với ID ${createQuizDto.subjectId} không tồn tại.`,
-          code: 'SUBJECT_NOT_FOUND',
-        });
-      }
-
-      // Tạo quiz
+  
+      // Tạo quiz mới
       const quiz = this.quizzesRepository.create({
         ...createQuizDto,
-        user, // Gắn user đã tìm được
-        class: cla, // Gắn class đã tìm được
-        subject: sub, // Gắn subject đã tìm được
+        user,
+        subject, // Thay vì `sub`
+        classes,
       });
-
+  
       const savedQuiz = await this.quizzesRepository.save(quiz);
-
-      // Trả về thông báo thành công và dữ liệu
+  
       return {
         message: 'Quiz đã được tạo thành công.',
         data: savedQuiz,
       };
     } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw error;
-      }
+      console.error(error); // In lỗi ra console để debug dễ hơn
       throw new BadRequestException({
         message: 'Có lỗi xảy ra trong quá trình tạo quiz.',
         code: 'CREATE_QUIZ_FAILED',
       });
     }
   }
+  
 
-
-
-  async findAll(): Promise<Quizzes[]> {
+  async findAll(): Promise<any> {
     const quizzes = await this.quizzesRepository.find({
-      relations: ['user', 'questions', 'questions.answers', 'class', 'subject'],
+      select: ['quizz_id', 'title', 'description', 'created_at', 'time'],
+      relations: ['user', 'classes', 'subject'],
     });
-
+    
     if (!quizzes.length) {
       throw new NotFoundException({
         message: 'Không tìm thấy quiz nào.',
         code: 'NO_QUIZZES_FOUND',
       });
     }
-    return quizzes;
+  
+    return {
+      message: 'Lấy danh sách thành công',
+      data: quizzes.map((quiz) => ({
+        quizz_id: quiz.quizz_id,
+        title: quiz.title,
+        time: quiz.time,
+        description: quiz.description,
+        created_at: quiz.created_at,
+        subject: quiz.subject,
+        user: {
+          username: quiz.user.username,
+        },
+        classes: quiz.classes.map((cls) => cls.class_name), 
+      })),
+    };
   }
+  
+  
+  
 
   async findOne(id: string): Promise<Quizzes> {
     const quiz = await this.quizzesRepository.findOne({
       where: { quizz_id: id },
-      relations: ['user', 'questions', 'questions.answers', 'class', 'subject'],
+      relations: ['user', 'questions', 'questions.answers', 'classes', 'subject'], // Đảm bảo là 'classes'
     });
 
     if (!quiz) {
@@ -132,7 +150,7 @@ export class QuizzesService {
   async update(id: string, updateQuizDto: UpdateQuizDto): Promise<Quizzes> {
     try {
       const quiz = await this.findOne(id);
-
+  
       // Cập nhật userId nếu có
       if (updateQuizDto.userId) {
         const user = await this.usersRepository.findOne({ where: { user_id: updateQuizDto.userId } });
@@ -141,25 +159,27 @@ export class QuizzesService {
         }
       }
 
-      // Cập nhật classId nếu có
-      if (updateQuizDto.classId) {
-        const cla = await this.classReponsitory.findOne({ where: { class_id: updateQuizDto.classId } });
-        if (cla) {
-          quiz.class = cla;
-        }
-      }
-
-      // Cập nhật subjectId nếu có
       if (updateQuizDto.subjectId) {
-        const sub = await this.subjectReponsitory.findOne({ where: { subject_id: updateQuizDto.subjectId } });
-        if (sub) {
-          quiz.subject = sub;
+        const subject = await this.subjectReponsitory.findOne({ where: { subject_id: updateQuizDto.subjectId } });
+        if (subject) {
+          quiz.subject = subject;
         }
       }
-
+  
+      // Cập nhật các lớp học nếu có
+      if (updateQuizDto.classIds && updateQuizDto.classIds.length > 0) {
+        const classes = await this.classReponsitory
+          .createQueryBuilder('classes')
+          .where('classes.class_id IN (:...classIds)', { classIds: updateQuizDto.classIds })
+          .getMany();
+        if (classes.length > 0) {
+          quiz.classes = classes; // Cập nhật danh sách lớp học
+        }
+      }
+  
       // Cập nhật các thuộc tính khác nếu có
       Object.assign(quiz, updateQuizDto);
-
+  
       // Lưu lại quiz đã cập nhật
       return this.quizzesRepository.save(quiz);
     } catch (error) {
@@ -172,6 +192,8 @@ export class QuizzesService {
       });
     }
   }
+  
+  
 
 
   async remove(id: string): Promise<void> {
